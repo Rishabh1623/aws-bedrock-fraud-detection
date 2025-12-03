@@ -14,9 +14,13 @@ Production-grade, real-time fraud detection system leveraging Reinforcement Fine
 
 ## 📖 Documentation Quick Links
 
-- **[🚀 GETTING STARTED](GETTING_STARTED.md)** - Complete beginner-friendly guide (START HERE!)
+### Deployment Guides
+- **[🖥️ DEPLOY FROM EC2](DEPLOY_FROM_EC2.md)** - Deploy from Ubuntu EC2 instance (RECOMMENDED!)
+- **[🚀 GETTING STARTED](GETTING_STARTED.md)** - Complete beginner-friendly guide
 - **[⚡ QUICKSTART](QUICKSTART.md)** - 15-minute rapid deployment
 - **[✅ PRE-DEPLOYMENT CHECKLIST](PRE_DEPLOYMENT_CHECKLIST.md)** - Verify you're ready to deploy
+
+### Technical Documentation
 - **[🏗️ Architecture Deep Dive](docs/ARCHITECTURE.md)** - Technical architecture details
 - **[💼 AWS SA Portfolio Guide](docs/AWS_SA_PORTFOLIO.md)** - How this showcases SA skills
 - **[🎤 Interview Guide](docs/INTERVIEW_GUIDE.md)** - Common questions and answers
@@ -135,7 +139,9 @@ aws-bedrock-fraud-detection/
 
 ### Prerequisites Checklist
 
-Before starting, ensure you have:
+**Recommended Approach:** Deploy from Ubuntu EC2 instance (see [DEPLOY_FROM_EC2.md](DEPLOY_FROM_EC2.md))
+
+**Alternative:** Deploy from your local machine:
 
 - [ ] **AWS Account** with admin access ([Create one](https://aws.amazon.com/free/))
 - [ ] **AWS CLI** installed and configured ([Install Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html))
@@ -144,6 +150,8 @@ Before starting, ensure you have:
 - [ ] **Node.js** 18+ installed ([Download](https://nodejs.org/))
 - [ ] **Git** installed ([Download](https://git-scm.com/downloads))
 - [ ] **Amazon Bedrock Access** enabled in your AWS account (see below)
+
+> 💡 **Tip:** Using an Ubuntu EC2 instance as your deployment server is recommended for faster AWS API calls and a consistent environment.
 
 ### Step 0: Enable Amazon Bedrock Access
 
@@ -156,7 +164,17 @@ Before starting, ensure you have:
 5. Enable: **Claude 3 Haiku** by Anthropic
 6. Submit request (usually approved instantly)
 
-### Step 1: Clone and Setup
+### Step 1: Choose Your Deployment Method
+
+**Option A: Deploy from Ubuntu EC2 (Recommended)**
+- Follow the complete guide: **[DEPLOY_FROM_EC2.md](DEPLOY_FROM_EC2.md)**
+- Benefits: Faster, consistent environment, can disconnect and reconnect
+
+**Option B: Deploy from Local Machine**
+- Continue with steps below
+- Works on Windows, Mac, or Linux
+
+### Step 2: Clone and Setup
 
 ```bash
 # Clone the repository
@@ -167,10 +185,17 @@ cd aws-bedrock-fraud-detection
 ls -la  # Should see infrastructure/, api/, docs/, etc.
 ```
 
-### Step 2: Configure AWS Credentials
+### Step 3: Configure AWS Credentials
 
+**If using EC2 with IAM Role (Recommended):**
 ```bash
-# Configure AWS CLI (if not already done)
+# No configuration needed - IAM role provides credentials automatically
+aws sts get-caller-identity
+```
+
+**If using local machine or EC2 without IAM role:**
+```bash
+# Configure AWS CLI
 aws configure
 
 # Enter your credentials:
@@ -184,7 +209,7 @@ aws sts get-caller-identity
 # Should show your AWS account ID
 ```
 
-### Step 3: Customize Configuration
+### Step 4: Customize Configuration
 
 ```bash
 cd infrastructure
@@ -222,7 +247,7 @@ curl ifconfig.me
 (Invoke-WebRequest -Uri "https://ifconfig.me").Content
 ```
 
-### Step 4: Deploy Infrastructure with Terraform
+### Step 5: Deploy Infrastructure with Terraform
 
 ```bash
 # Still in infrastructure/ directory
@@ -255,7 +280,7 @@ s3_bucket_name = "fraud-detection-rft-model-artifacts-123456789012"
 
 **💾 Save these outputs!** You'll need them for the next steps.
 
-### Step 5: Generate Sample Training Data
+### Step 6: Generate Sample Training Data
 
 ```bash
 # Go back to project root
@@ -286,7 +311,7 @@ Generated 200 test transactions
 - `data/training/fraud_samples.jsonl` - Training data
 - `data/test/test_transactions.jsonl` - Test data
 
-### Step 6: Wait for EC2 Instances to be Ready
+### Step 7: Wait for EC2 Instances to be Ready
 
 ```bash
 # Check if EC2 instances are running
@@ -308,7 +333,7 @@ aws elbv2 describe-target-health \
 # Wait until TargetHealth.State shows "healthy"
 ```
 
-### Step 7: Test the API
+### Step 8: Test the API
 
 ```bash
 # Get your ALB DNS name
@@ -356,7 +381,7 @@ curl -X POST http://$ALB_DNS/score \
 
 **✅ If you see JSON responses, your API is working!**
 
-### Step 8: (Optional) Train Custom RFT Model
+### Step 9: (Optional) Train Custom RFT Model
 
 **Note:** This step is optional and costs ~$50-100. The base model works fine for demos.
 
@@ -380,7 +405,7 @@ python train_rft.py \
 # Monitor in AWS Console: Bedrock > Custom models
 ```
 
-### Step 9: (Optional) Launch Monitoring Dashboard
+### Step 10: (Optional) Launch Monitoring Dashboard
 
 ```bash
 cd dashboard
@@ -398,7 +423,7 @@ npm run dev
 # Open browser to http://localhost:5173
 ```
 
-### Step 10: View Your Infrastructure
+### Step 11: View Your Infrastructure
 
 **AWS Console Checklist:**
 
