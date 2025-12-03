@@ -10,6 +10,20 @@ Production-grade, real-time fraud detection system leveraging Reinforcement Fine
 
 **🎯 Perfect for:** AWS Solutions Architect interviews and portfolio | **⏱️ Setup Time:** 30-45 minutes | **💰 Cost:** ~$5-10 for testing
 
+---
+
+## 📖 Documentation Quick Links
+
+- **[🚀 GETTING STARTED](GETTING_STARTED.md)** - Complete beginner-friendly guide (START HERE!)
+- **[⚡ QUICKSTART](QUICKSTART.md)** - 15-minute rapid deployment
+- **[✅ PRE-DEPLOYMENT CHECKLIST](PRE_DEPLOYMENT_CHECKLIST.md)** - Verify you're ready to deploy
+- **[🏗️ Architecture Deep Dive](docs/ARCHITECTURE.md)** - Technical architecture details
+- **[💼 AWS SA Portfolio Guide](docs/AWS_SA_PORTFOLIO.md)** - How this showcases SA skills
+- **[🎤 Interview Guide](docs/INTERVIEW_GUIDE.md)** - Common questions and answers
+- **[💰 Cost Analysis](docs/COST_ANALYSIS.md)** - Detailed cost breakdown and ROI
+
+---
+
 ## 🎯 Project Highlights
 
 - **66% Accuracy Improvement**: Over base models using Bedrock RFT
