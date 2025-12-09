@@ -52,7 +52,7 @@ def lambda_handler(event, context):
 
 def score_transaction(transaction):
     """Score transaction using Bedrock RFT model"""
-    prompt = f"""Analyze this transaction for fraud indicators:
+    prompt = f"""Analyze this financial transaction for risk indicators:
 
 Transaction Details:
 - Amount: ${transaction.get('amount', 0)}
@@ -62,7 +62,8 @@ Transaction Details:
 - Time: {transaction.get('timestamp', datetime.now().isoformat())}
 - Recent transactions (24h): {transaction.get('recent_transaction_count', 0)}
 
-Provide a fraud risk score (0.0-1.0) and brief explanation."""
+Provide a risk score from 0.0 (safe) to 1.0 (suspicious) and brief explanation.
+Format: Score: X.XX - Explanation"""
 
     try:
         response = bedrock_runtime.invoke_model(
