@@ -20,8 +20,8 @@ enable_multi_az = false  # Set to true for production
 # Security Features
 enable_waf = false  # Set to true for production
 
-# Bedrock Model
-bedrock_model_id = "anthropic.claude-3-haiku-20240307-v1:0"
+# Bedrock Model (Nova Lite supports RFT)
+bedrock_model_id = "amazon.nova-lite-v1:0"
 
 # Fraud Detection
 fraud_threshold = 0.8
