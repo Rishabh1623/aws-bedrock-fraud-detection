@@ -35,8 +35,10 @@ else
     USER="ec2-user"
 fi
 
-# Install pip packages
-$PYTHON_CMD -m pip install --upgrade pip
+# Install pip packages (skip pip upgrade on Amazon Linux to avoid rpm conflict)
+if command -v apt-get &> /dev/null; then
+    $PYTHON_CMD -m pip install --upgrade pip
+fi
 $PYTHON_CMD -m pip install fastapi uvicorn boto3 pydantic
 
 # Install AWS CloudWatch Agent
