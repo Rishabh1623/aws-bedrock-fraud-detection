@@ -1,11 +1,16 @@
-output "alb_dns_name" {
-  description = "DNS name of the Application Load Balancer"
-  value       = aws_lb.main.dns_name
+output "api_gateway_url" {
+  description = "API Gateway endpoint URL"
+  value       = aws_apigatewayv2_api.fraud_api.api_endpoint
 }
 
 output "api_endpoint" {
-  description = "API endpoint URL"
-  value       = "http://${aws_lb.main.dns_name}/score"
+  description = "Fraud detection API endpoint"
+  value       = "${aws_apigatewayv2_api.fraud_api.api_endpoint}/score"
+}
+
+output "health_endpoint" {
+  description = "Health check endpoint"
+  value       = "${aws_apigatewayv2_api.fraud_api.api_endpoint}/health"
 }
 
 output "dynamodb_table_name" {

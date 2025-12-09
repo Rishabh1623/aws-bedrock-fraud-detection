@@ -9,7 +9,7 @@ dynamodb = boto3.resource('dynamodb')
 events = boto3.client('events')
 
 TABLE_NAME = os.environ.get('DYNAMODB_TABLE', 'fraud-detection-rft-transactions')
-MODEL_ID = os.environ.get('MODEL_ID', 'anthropic.claude-3-haiku-20240307-v1:0')
+MODEL_ID = os.environ.get('MODEL_ID', 'amazon.nova-lite-v1:0')
 
 def lambda_handler(event, context):
     """Real-time fraud detection API"""
@@ -68,17 +68,19 @@ Provide a fraud risk score (0.0-1.0) and brief explanation."""
         response = bedrock_runtime.invoke_model(
             modelId=MODEL_ID,
             body=json.dumps({
-                "anthropic_version": "bedrock-2023-05-31",
-                "max_tokens": 200,
                 "messages": [{
                     "role": "user",
                     "content": prompt
-                }]
+                }],
+                "inferenceConfig": {
+                    "max_new_tokens": 200,
+                    "temperature": 0.7
+                }
             })
         )
         
         result = json.loads(response['body'].read())
-        content = result['content'][0]['text']
+        content = result['output']['message']['content'][0]['text']
         
         # Parse risk score from response
         risk_score = extract_risk_score(content)
