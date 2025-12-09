@@ -433,6 +433,155 @@ cd ~/aws-bedrock-fraud-detection
 bash scripts/test_api.sh http://$ALB_DNS
 ```
 
+### 8.5 Test with Postman (Recommended for Demo/Recording) 🎥
+
+**Perfect for:**
+- Screen recording demos
+- Portfolio videos
+- Interview presentations
+- Professional testing
+
+#### Step 1: Download Postman
+
+On your **local computer** (not EC2):
+1. Download Postman: https://www.postman.com/downloads/
+2. Install and open Postman
+
+#### Step 2: Import Collection
+
+1. Download the collection from GitHub:
+   - Go to: https://github.com/Rishabh1623/aws-bedrock-fraud-detection
+   - Download `postman_collection.json`
+
+2. In Postman:
+   - Click **Import** (top left)
+   - Drag and drop `postman_collection.json`
+   - Collection appears: "Fraud Detection API"
+
+#### Step 3: Configure ALB DNS
+
+1. Click on "Fraud Detection API" collection
+2. Click **Variables** tab
+3. Update `alb_dns` value with your actual ALB DNS:
+   ```
+   fraud-detection-rft-alb-1234567890.us-east-1.elb.amazonaws.com
+   ```
+4. Click **Save**
+
+#### Step 4: Run Tests
+
+The collection includes 6 pre-configured tests:
+
+**1. Health Check** ✅
+- Method: GET
+- Endpoint: `/health`
+- Expected: `{"status":"healthy",...}`
+
+**2. Test 1: Normal Transaction (LOW Risk)** 🟢
+- Amount: $45.99
+- Merchant: Amazon
+- Expected: `risk_level: "LOW"`, `risk_score: ~0.1-0.3`
+
+**3. Test 2: Medium Risk Transaction** 🟡
+- Amount: $500.00
+- Merchant: Electronics Store
+- Expected: `risk_level: "MEDIUM"`, `risk_score: ~0.5-0.7`
+
+**4. Test 3: High Risk Transaction** 🔴
+- Amount: $2,500.00
+- Merchant: UNKNOWN_MERCHANT
+- Expected: `risk_level: "HIGH"`, `risk_score: ~0.8-0.9`
+
+**5. Test 4: Extreme Risk Transaction** 🚨
+- Amount: $9,999.99
+- Merchant: CRYPTO_EXCHANGE
+- Expected: `risk_level: "HIGH"`, `risk_score: ~0.95-0.99`
+
+**6. Get Metrics** 📊
+- Shows total transactions, fraud rate, etc.
+
+#### Step 5: Recording Your Demo
+
+**Recommended Flow:**
+
+1. **Start with Health Check**
+   - Click "Health Check"
+   - Click **Send**
+   - Show green status ✅
+
+2. **Test Normal Transaction**
+   - Click "Test 1: Normal Transaction"
+   - Show the request body (expand)
+   - Click **Send**
+   - Point out: `risk_level: "LOW"`, `risk_score: 0.15`
+   - Show response time: <100ms
+
+3. **Test High Risk Transaction**
+   - Click "Test 3: High Risk Transaction"
+   - Show the request body
+   - Click **Send**
+   - Point out: `risk_level: "HIGH"`, `risk_score: 0.85`
+   - Show fast response time
+
+4. **Show Metrics**
+   - Click "Get Metrics"
+   - Click **Send**
+   - Show total transactions, fraud detected
+
+5. **Switch to AWS Console**
+   - Show DynamoDB table with transactions
+   - Show CloudWatch logs
+   - Show ALB metrics
+
+**Pro Tips for Recording:**
+- Use Postman's dark theme (looks professional)
+- Zoom in so text is readable
+- Speak while clicking: "Now I'll test a normal transaction..."
+- Show the response time in bottom right
+- Highlight key fields: `risk_score`, `risk_level`, `latency_ms`
+
+#### Alternative: Test from Terminal
+
+If you prefer command-line (also good for recording):
+
+```bash
+# Get your ALB DNS
+ALB_DNS=$(cd ~/aws-bedrock-fraud-detection/infrastructure && terraform output -raw alb_dns_name)
+
+# Install jq for pretty JSON output
+sudo apt install jq -y
+
+# Test 1: Normal Transaction
+echo "Testing Normal Transaction..."
+curl -s -X POST http://$ALB_DNS/score \
+  -H "Content-Type: application/json" \
+  -d '{
+    "transaction": {
+      "transaction_id": "TEST001",
+      "amount": 45.99,
+      "merchant": "Amazon",
+      "location": "New York",
+      "card_present": true,
+      "recent_transaction_count": 2
+    }
+  }' | jq '.'
+
+# Test 2: High Risk Transaction
+echo "Testing High Risk Transaction..."
+curl -s -X POST http://$ALB_DNS/score \
+  -H "Content-Type: application/json" \
+  -d '{
+    "transaction": {
+      "transaction_id": "TEST002",
+      "amount": 2500.00,
+      "merchant": "UNKNOWN_MERCHANT",
+      "location": "Foreign Country",
+      "card_present": false,
+      "recent_transaction_count": 15
+    }
+  }' | jq '.'
+```
+
 ---
 
 ## Step 9: Monitor Your Infrastructure (Optional)
@@ -595,30 +744,108 @@ aws elbv2 describe-target-health \
 
 ## 📚 Next Steps
 
-1. **Generate Training Data**
-   ```bash
-   cd ~/aws-bedrock-fraud-detection/data
-   python3 generate_sample_data.py
-   ```
+### 1. Create Demo Video (Recommended) 🎥
 
-2. **Train Custom Model** (optional, costs $50-100)
-   ```bash
-   cd ~/aws-bedrock-fraud-detection/model
-   pip3 install -r requirements.txt
-   python3 train_rft.py --dataset ../data/training/fraud_samples.jsonl --bucket YOUR_S3_BUCKET
-   ```
+**Perfect for portfolio and interviews!**
 
-3. **Deploy Dashboard** (optional)
-   ```bash
-   cd ~/aws-bedrock-fraud-detection/dashboard
-   npm install
-   npm run dev
-   ```
+**Recording Checklist:**
+- [ ] Test API with Postman (show 3-4 transactions)
+- [ ] Show AWS Console (EC2, ALB, DynamoDB)
+- [ ] Show CloudWatch logs and metrics
+- [ ] Explain architecture briefly
+- [ ] Show cost optimization decisions
+- [ ] Total video: 3-5 minutes
 
-4. **Add to Portfolio**
-   - Take screenshots of working system
-   - Document your deployment process
-   - Add to resume and LinkedIn
+**Tools:**
+- Screen recording: OBS Studio (free) or Loom
+- Video editing: DaVinci Resolve (free) or iMovie
+- Upload to: YouTube (unlisted) or LinkedIn
+
+**Script Template:**
+```
+[0:00-0:30] Introduction
+"Hi, I'm [Your Name]. I built a production-grade fraud detection system on AWS..."
+
+[0:30-1:30] Architecture Overview
+Show AWS Console - EC2, ALB, VPC, DynamoDB
+"Multi-AZ deployment with auto-scaling..."
+
+[1:30-3:00] Live Demo
+Use Postman to test transactions
+Show real-time results
+
+[3:00-4:00] Monitoring
+CloudWatch logs, metrics, DynamoDB data
+
+[4:00-4:30] Results
+"Processes 10K TPS, <100ms latency, 66% accuracy improvement"
+
+[4:30-5:00] Conclusion
+"Perfect example of AWS Solutions Architect skills"
+```
+
+### 2. Generate Training Data
+
+```bash
+cd ~/aws-bedrock-fraud-detection/data
+python3 generate_sample_data.py
+```
+
+### 3. Train Custom Model (Optional, costs $50-100)
+
+```bash
+cd ~/aws-bedrock-fraud-detection/model
+pip3 install -r requirements.txt
+python3 train_rft.py --dataset ../data/training/fraud_samples.jsonl --bucket YOUR_S3_BUCKET
+```
+
+### 4. Deploy Dashboard (Optional)
+
+```bash
+cd ~/aws-bedrock-fraud-detection/dashboard
+npm install
+npm run dev
+```
+
+### 5. Add to Portfolio
+
+**Screenshots to Take:**
+- [ ] AWS Console showing infrastructure
+- [ ] Postman showing successful API tests
+- [ ] DynamoDB table with transactions
+- [ ] CloudWatch dashboard with metrics
+- [ ] Terraform apply output
+- [ ] Architecture diagram
+
+**Update Your Resume:**
+```
+AWS Fraud Detection System | Personal Project
+• Architected production-grade fraud detection platform using Amazon Bedrock RFT
+• Deployed multi-AZ infrastructure with Terraform (VPC, ALB, Auto Scaling, DynamoDB)
+• Achieved 66% accuracy improvement and <100ms latency at 10K TPS
+• Implemented comprehensive monitoring with CloudWatch and automated alerting
+• Reduced costs by 95% using Amazon Nova Lite vs large foundation models
+• Technologies: AWS (Bedrock, EC2, ALB, VPC, DynamoDB), Terraform, Python, FastAPI
+```
+
+**Update LinkedIn:**
+```
+🚀 Just deployed a production-grade fraud detection system on AWS!
+
+Key achievements:
+✅ Multi-AZ architecture with auto-scaling
+✅ Amazon Bedrock RFT for AI/ML
+✅ <100ms latency at 10,000 TPS
+✅ 66% accuracy improvement
+✅ 95% cost reduction
+
+Technologies: AWS Bedrock, Terraform, Python, FastAPI
+
+Check out the demo: [link to video]
+GitHub: [link to repo]
+
+#AWS #CloudArchitecture #MachineLearning #DevOps
+```
 
 ---
 
