@@ -16,9 +16,18 @@ def lambda_handler(event, context):
     start_time = time.time()
     
     try:
+        # Handle health check
+        if event.get('rawPath') == '/health' or event.get('path') == '/health':
+            return {
+                'statusCode': 200,
+                'headers': {'Content-Type': 'application/json'},
+                'body': json.dumps({'status': 'healthy'})
+            }
+        
         # Parse transaction
         body = json.loads(event['body']) if isinstance(event.get('body'), str) else event
-        transaction = body.get('transaction', {})
+        # Support both nested and direct transaction format
+        transaction = body.get('transaction', body)
         
         # Score transaction
         risk_score, explanation = score_transaction(transaction)
