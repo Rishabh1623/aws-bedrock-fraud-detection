@@ -7,14 +7,15 @@ terraform {
     }
   }
   
-  backend "s3" {
-    # Configure after initial setup
-    # bucket = "your-terraform-state-bucket"
-    # key    = "fraud-detection/terraform.tfstate"
-    # region = "us-east-1"
-    # encrypt = true
-    # dynamodb_table = "terraform-state-lock"
-  }
+  # Backend configuration - using local state for initial deployment
+  # Uncomment and configure S3 backend for production team collaboration
+  # backend "s3" {
+  #   bucket = "your-terraform-state-bucket"
+  #   key    = "fraud-detection/terraform.tfstate"
+  #   region = "us-east-1"
+  #   encrypt = true
+  #   dynamodb_table = "terraform-state-lock"
+  # }
 }
 
 provider "aws" {
