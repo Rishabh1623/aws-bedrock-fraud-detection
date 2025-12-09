@@ -70,7 +70,7 @@ Provide a fraud risk score (0.0-1.0) and brief explanation."""
             body=json.dumps({
                 "messages": [{
                     "role": "user",
-                    "content": prompt
+                    "content": [{"text": prompt}]
                 }],
                 "inferenceConfig": {
                     "max_new_tokens": 200,
