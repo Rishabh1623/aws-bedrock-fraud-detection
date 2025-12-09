@@ -12,7 +12,7 @@ if command -v apt-get &> /dev/null; then
     # Ubuntu/Debian
     export DEBIAN_FRONTEND=noninteractive
     apt-get update -y
-    apt-get install -y python3 python3-pip git curl wget unzip
+    apt-get install -y python3 python3-pip git wget unzip
     
     # Install Docker
     apt-get install -y docker.io
@@ -22,9 +22,9 @@ if command -v apt-get &> /dev/null; then
     PYTHON_CMD="python3"
     USER="ubuntu"
 else
-    # Amazon Linux
+    # Amazon Linux - skip curl (already installed as curl-minimal)
     yum update -y
-    yum install -y python3 python3-pip git curl wget unzip
+    yum install -y python3 python3-pip git wget unzip
     
     # Install Docker
     yum install -y docker
