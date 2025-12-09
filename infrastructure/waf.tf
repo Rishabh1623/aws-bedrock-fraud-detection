@@ -89,20 +89,29 @@ resource "aws_wafv2_web_acl" "api_protection" {
   }
 }
 
-# Associate WAF with API Gateway
-resource "aws_wafv2_web_acl_association" "api_gateway" {
-  resource_arn = aws_apigatewayv2_stage.default.arn
-  web_acl_arn  = aws_wafv2_web_acl.api_protection.arn
-}
+# Note: WAF association with HTTP API Gateway is not supported
+# HTTP APIs don't support WAF directly. For production, consider:
+# 1. Use REST API instead of HTTP API (supports WAF)
+# 2. Use CloudFront in front of HTTP API (CloudFront supports WAF)
+# 3. Use API Gateway resource policies for IP-based access control
+#
+# For this demo, we keep the WAF configuration to show security awareness
+# but don't associate it. In production, you'd use option 1 or 2.
 
-# CloudWatch Log Group for WAF
+# Uncomment below if using REST API (aws_api_gateway_rest_api):
+# resource "aws_wafv2_web_acl_association" "api_gateway" {
+#   resource_arn = aws_apigatewayv2_stage.default.arn
+#   web_acl_arn  = aws_wafv2_web_acl.api_protection.arn
+# }
+
+# CloudWatch Log Group for WAF (must start with aws-waf-logs-)
 resource "aws_cloudwatch_log_group" "waf_logs" {
-  name              = "/aws/waf/${var.project_name}"
+  name              = "aws-waf-logs-${var.project_name}"
   retention_in_days = 7
 }
 
 # WAF Logging Configuration
 resource "aws_wafv2_web_acl_logging_configuration" "api_waf_logging" {
   resource_arn            = aws_wafv2_web_acl.api_protection.arn
-  log_destination_configs = [aws_cloudwatch_log_group.waf_logs.arn]
+  log_destination_configs = ["${aws_cloudwatch_log_group.waf_logs.arn}:*"]
 }
