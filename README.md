@@ -14,6 +14,9 @@ Production-grade, real-time fraud detection system leveraging Reinforcement Fine
 
 ## 📖 Documentation Quick Links
 
+### 🎯 Start Here
+- **[🎯 PROJECT PURPOSE](PROJECT_PURPOSE.md)** - Why build this? Career goals & ROI (READ FIRST!)
+
 ### Deployment Guides
 - **[🖥️ DEPLOY FROM EC2](DEPLOY_FROM_EC2.md)** - Deploy from Ubuntu EC2 instance (RECOMMENDED!)
 - **[🚀 GETTING STARTED](GETTING_STARTED.md)** - Complete beginner-friendly guide
