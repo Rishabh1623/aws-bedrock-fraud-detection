@@ -13,6 +13,16 @@ output "health_endpoint" {
   value       = "${aws_apigatewayv2_api.fraud_api.api_endpoint}/health"
 }
 
+output "lambda_function_name" {
+  description = "Lambda function name"
+  value       = aws_lambda_function.fraud_detection.function_name
+}
+
+output "lambda_function_arn" {
+  description = "Lambda function ARN"
+  value       = aws_lambda_function.fraud_detection.arn
+}
+
 output "dynamodb_table_name" {
   description = "DynamoDB table for transactions"
   value       = aws_dynamodb_table.transactions.name
@@ -28,22 +38,12 @@ output "sns_topic_arn" {
   value       = aws_sns_topic.fraud_alerts.arn
 }
 
-output "vpc_id" {
-  description = "VPC ID"
-  value       = aws_vpc.main.id
+output "waf_web_acl_arn" {
+  description = "WAF Web ACL ARN"
+  value       = aws_wafv2_web_acl.api_protection.arn
 }
 
-output "private_subnet_ids" {
-  description = "Private subnet IDs"
-  value       = aws_subnet.private[*].id
-}
-
-output "ec2_security_group_id" {
-  description = "Security group ID for EC2 instances"
-  value       = aws_security_group.ec2.id
-}
-
-output "autoscaling_group_name" {
-  description = "Auto Scaling Group name"
-  value       = aws_autoscaling_group.api_servers.name
+output "cloudwatch_dashboard_name" {
+  description = "CloudWatch Dashboard name"
+  value       = aws_cloudwatch_dashboard.main.dashboard_name
 }

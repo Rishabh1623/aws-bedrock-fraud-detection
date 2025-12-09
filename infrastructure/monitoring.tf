@@ -1,4 +1,4 @@
-# CloudWatch Monitoring and Alarms
+# CloudWatch Monitoring and Alarms for Lambda Architecture
 
 # CloudWatch Dashboard
 resource "aws_cloudwatch_dashboard" "main" {
@@ -10,121 +10,111 @@ resource "aws_cloudwatch_dashboard" "main" {
         type = "metric"
         properties = {
           metrics = [
-            ["AWS/ApplicationELB", "TargetResponseTime", { stat = "Average" }],
-            [".", "RequestCount", { stat = "Sum" }],
-            [".", "HTTPCode_Target_4XX_Count", { stat = "Sum" }],
-            [".", "HTTPCode_Target_5XX_Count", { stat = "Sum" }]
+            ["AWS/Lambda", "Invocations", { stat = "Sum" }],
+            [".", "Errors", { stat = "Sum" }],
+            [".", "Duration", { stat = "Average" }],
+            [".", "Throttles", { stat = "Sum" }]
           ]
           period = 300
           stat   = "Average"
           region = var.aws_region
-          title  = "ALB Metrics"
+          title  = "Lambda Metrics"
         }
       },
       {
         type = "metric"
         properties = {
           metrics = [
-            ["AWS/EC2", "CPUUtilization", { stat = "Average" }],
-            [".", "NetworkIn", { stat = "Sum" }],
-            [".", "NetworkOut", { stat = "Sum" }]
+            ["AWS/ApiGateway", "Count", { stat = "Sum" }],
+            [".", "4XXError", { stat = "Sum" }],
+            [".", "5XXError", { stat = "Sum" }],
+            [".", "Latency", { stat = "Average" }]
           ]
           period = 300
           stat   = "Average"
           region = var.aws_region
-          title  = "EC2 Metrics"
+          title  = "API Gateway Metrics"
         }
       },
       {
         type = "metric"
         properties = {
           metrics = [
-            [var.project_name, "TransactionLatency", { stat = "Average" }],
-            [".", "RiskScore", { stat = "Average" }]
+            ["AWS/DynamoDB", "ConsumedReadCapacityUnits", { stat = "Sum" }],
+            [".", "ConsumedWriteCapacityUnits", { stat = "Sum" }]
           ]
           period = 300
-          stat   = "Average"
+          stat   = "Sum"
           region = var.aws_region
-          title  = "Application Metrics"
+          title  = "DynamoDB Metrics"
         }
       }
     ]
   })
 }
 
-# Alarm for high error rate
-resource "aws_cloudwatch_metric_alarm" "high_error_rate" {
-  alarm_name          = "${var.project_name}-high-error-rate"
+# Alarm for Lambda errors
+resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
+  alarm_name          = "${var.project_name}-lambda-errors"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "2"
-  metric_name         = "HTTPCode_Target_5XX_Count"
-  namespace           = "AWS/ApplicationELB"
+  metric_name         = "Errors"
+  namespace           = "AWS/Lambda"
   period              = "300"
   statistic           = "Sum"
-  threshold           = "10"
-  alarm_description   = "Alert when 5XX errors exceed threshold"
+  threshold           = "5"
+  alarm_description   = "Alert when Lambda errors exceed threshold"
   alarm_actions       = [aws_sns_topic.fraud_alerts.arn]
 
   dimensions = {
-    LoadBalancer = aws_lb.main.arn_suffix
+    FunctionName = aws_lambda_function.fraud_detection.function_name
   }
 }
 
-# Alarm for high latency
-resource "aws_cloudwatch_metric_alarm" "high_latency" {
-  alarm_name          = "${var.project_name}-high-latency"
+# Alarm for Lambda throttles
+resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
+  alarm_name          = "${var.project_name}-lambda-throttles"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "Throttles"
+  namespace           = "AWS/Lambda"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "1"
+  alarm_description   = "Alert when Lambda is throttled"
+  alarm_actions       = [aws_sns_topic.fraud_alerts.arn]
+
+  dimensions = {
+    FunctionName = aws_lambda_function.fraud_detection.function_name
+  }
+}
+
+# Alarm for API Gateway 5XX errors
+resource "aws_cloudwatch_metric_alarm" "api_gateway_errors" {
+  alarm_name          = "${var.project_name}-api-5xx-errors"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "2"
-  metric_name         = "TargetResponseTime"
-  namespace           = "AWS/ApplicationELB"
+  metric_name         = "5XXError"
+  namespace           = "AWS/ApiGateway"
   period              = "300"
-  statistic           = "Average"
-  threshold           = "1.0"
-  alarm_description   = "Alert when response time > 1s"
+  statistic           = "Sum"
+  threshold           = "5"
+  alarm_description   = "Alert when API Gateway 5XX errors exceed threshold"
   alarm_actions       = [aws_sns_topic.fraud_alerts.arn]
 
   dimensions = {
-    LoadBalancer = aws_lb.main.arn_suffix
+    ApiName = aws_apigatewayv2_api.fraud_api.name
   }
 }
 
-# Alarm for unhealthy targets
-resource "aws_cloudwatch_metric_alarm" "unhealthy_targets" {
-  alarm_name          = "${var.project_name}-unhealthy-targets"
-  comparison_operator = "LessThanThreshold"
-  evaluation_periods  = "1"
-  metric_name         = "HealthyHostCount"
-  namespace           = "AWS/ApplicationELB"
-  period              = "60"
-  statistic           = "Average"
-  threshold           = "1"
-  alarm_description   = "Alert when no healthy targets"
-  alarm_actions       = [aws_sns_topic.fraud_alerts.arn]
-
-  dimensions = {
-    TargetGroup  = aws_lb_target_group.api.arn_suffix
-    LoadBalancer = aws_lb.main.arn_suffix
-  }
-}
-
-# Log Group for application logs
-resource "aws_cloudwatch_log_group" "app_logs" {
-  name              = "/aws/ec2/${var.project_name}"
-  retention_in_days = 30
-
-  tags = {
-    Name = "${var.project_name}-app-logs"
-  }
-}
-
-# Metric filter for fraud detection
-resource "aws_cloudwatch_log_metric_filter" "fraud_detected" {
-  name           = "${var.project_name}-fraud-detected"
-  log_group_name = aws_cloudwatch_log_group.app_logs.name
-  pattern        = "[... risk_score > 0.8]"
+# Metric filter for high-risk transactions
+resource "aws_cloudwatch_log_metric_filter" "high_risk_transactions" {
+  name           = "${var.project_name}-high-risk"
+  log_group_name = aws_cloudwatch_log_group.lambda.name
+  pattern        = "[time, request_id, level, msg, risk_score > 0.8]"
 
   metric_transformation {
-    name      = "FraudDetected"
+    name      = "HighRiskTransactions"
     namespace = var.project_name
     value     = "1"
   }
