@@ -22,7 +22,6 @@ resource "aws_lambda_function" "fraud_detection" {
     variables = {
       DYNAMODB_TABLE = aws_dynamodb_table.transactions.name
       MODEL_ID       = var.bedrock_model_id
-      AWS_REGION     = var.aws_region
     }
   }
 
