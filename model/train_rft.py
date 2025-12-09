@@ -91,7 +91,7 @@ def main():
     parser = argparse.ArgumentParser(description='Train fraud detection model with Bedrock RFT')
     parser.add_argument('--dataset', required=True, help='Path to training dataset (JSONL)')
     parser.add_argument('--bucket', required=True, help='S3 bucket for artifacts')
-    parser.add_argument('--model', default='anthropic.claude-3-haiku-20240307-v1:0', help='Base model ID')
+    parser.add_argument('--model', default='amazon.nova-lite-v1:0', help='Base model ID (Nova Lite/Micro/Pro for RFT)')
     parser.add_argument('--job-name', default=f'fraud-rft-{datetime.now().strftime("%Y%m%d-%H%M%S")}', help='Job name')
     
     args = parser.parse_args()

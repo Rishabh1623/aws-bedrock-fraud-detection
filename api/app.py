@@ -26,7 +26,7 @@ cloudwatch = boto3.client('cloudwatch', region_name=os.getenv('AWS_REGION', 'us-
 
 # Configuration
 TABLE_NAME = os.getenv('DYNAMODB_TABLE', 'fraud-detection-rft-transactions')
-MODEL_ID = os.getenv('MODEL_ID', 'anthropic.claude-3-haiku-20240307-v1:0')
+MODEL_ID = os.getenv('MODEL_ID', 'amazon.nova-lite-v1:0')
 PROJECT_NAME = os.getenv('PROJECT_NAME', 'fraud-detection-rft')
 
 app = FastAPI(

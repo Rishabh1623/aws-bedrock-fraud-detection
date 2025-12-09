@@ -201,16 +201,19 @@ aws bedrock list-foundation-models --region us-east-1 2>&1 | head -5
 2. Make sure region is **us-east-1** (top right)
 3. Click **Model access** (left sidebar)
 4. Click **Enable specific models**
-5. Find **Claude 3 Haiku** by Anthropic
-6. Click **Enable**
-7. Click **Submit**
-8. Wait for "Access granted" status
+5. Find **Amazon Nova Lite** (supports RFT)
+6. Also enable **Amazon Nova Micro** and **Amazon Nova Pro** (optional)
+7. Click **Enable**
+8. Click **Submit**
+9. Wait for "Access granted" status
 
 **Verify:**
 ```bash
-aws bedrock list-foundation-models --region us-east-1 | grep -i haiku
-# Should show Claude 3 Haiku model info
+aws bedrock list-foundation-models --region us-east-1 | grep -i nova
+# Should show Amazon Nova models
 ```
+
+> **Note:** As of December 2024, Bedrock RFT only supports Amazon Nova models (Micro, Lite, Pro). Nova Lite is recommended for this project as it's cost-effective and fast.
 
 ---
 
@@ -255,6 +258,9 @@ owner_email     = "YOUR_EMAIL@example.com"  # ← Change this
 # Get your current IP for SSH access
 # Run: curl ifconfig.me
 allowed_ssh_cidr = ["YOUR_IP/32"]  # ← Change this
+
+# Bedrock model (Nova Lite supports RFT)
+bedrock_model_id = "amazon.nova-lite-v1:0"
 
 # For testing, use smaller/cheaper resources
 ec2_instance_type = "t3.small"     # Cheaper than t3.medium

@@ -28,9 +28,9 @@ variable "owner_email" {
 }
 
 variable "bedrock_model_id" {
-  description = "Bedrock model ID for RFT"
+  description = "Bedrock model ID for inference (use Nova Lite for RFT compatibility)"
   type        = string
-  default     = "anthropic.claude-3-haiku-20240307-v1:0"
+  default     = "amazon.nova-lite-v1:0"
 }
 
 variable "fraud_threshold" {

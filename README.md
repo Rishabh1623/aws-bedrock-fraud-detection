@@ -21,6 +21,7 @@ Production-grade, real-time fraud detection system leveraging Reinforcement Fine
 - **[✅ PRE-DEPLOYMENT CHECKLIST](PRE_DEPLOYMENT_CHECKLIST.md)** - Verify you're ready to deploy
 
 ### Technical Documentation
+- **[🤖 Bedrock RFT Models](docs/BEDROCK_RFT_MODELS.md)** - Supported models and why Nova Lite
 - **[🏗️ Architecture Deep Dive](docs/ARCHITECTURE.md)** - Technical architecture details
 - **[💼 AWS SA Portfolio Guide](docs/AWS_SA_PORTFOLIO.md)** - How this showcases SA skills
 - **[🎤 Interview Guide](docs/INTERVIEW_GUIDE.md)** - Common questions and answers
@@ -42,7 +43,7 @@ Production-grade, real-time fraud detection system leveraging Reinforcement Fine
 ### Core Services
 - **Compute**: EC2 Auto Scaling Group (t3.medium)
 - **Load Balancing**: Application Load Balancer
-- **AI/ML**: Amazon Bedrock (RFT with Claude 3 Haiku)
+- **AI/ML**: Amazon Bedrock (RFT with Amazon Nova Lite)
 - **Database**: DynamoDB (on-demand)
 - **Storage**: S3 (model artifacts, logs)
 - **Networking**: VPC with public/private subnets, NAT Gateway, VPC Endpoints
@@ -158,11 +159,14 @@ aws-bedrock-fraud-detection/
 **Important:** Bedrock requires explicit access in some regions.
 
 1. Go to [AWS Bedrock Console](https://console.aws.amazon.com/bedrock/)
-2. Select region: **us-east-1** (recommended) or **us-west-2**
+2. Select region: **us-east-1** (recommended)
 3. Click "Model access" in left sidebar
 4. Click "Enable specific models"
-5. Enable: **Claude 3 Haiku** by Anthropic
-6. Submit request (usually approved instantly)
+5. Enable: **Amazon Nova Lite** (supports RFT)
+6. Optionally enable: **Amazon Nova Micro** and **Amazon Nova Pro**
+7. Submit request (usually approved instantly)
+
+> **Note:** As of December 2024, Bedrock RFT only supports Amazon Nova models. Nova Lite is recommended for cost-effectiveness.
 
 ### Step 1: Choose Your Deployment Method
 
@@ -398,7 +402,7 @@ S3_BUCKET=$(cd ../infrastructure && terraform output -raw s3_bucket_name)
 python train_rft.py \
   --dataset ../data/training/fraud_samples.jsonl \
   --bucket $S3_BUCKET \
-  --model anthropic.claude-3-haiku-20240307-v1:0 \
+  --model amazon.nova-lite-v1:0 \
   --job-name fraud-rft-$(date +%Y%m%d)
 
 # Training takes 2-4 hours
