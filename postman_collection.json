@@ -7,7 +7,7 @@
   "variable": [
     {
       "key": "alb_dns",
-      "value": "your-alb-dns.us-east-1.elb.amazonaws.com",
+      "value": "8xr9oib9k8.execute-api.us-east-1.amazonaws.com",
       "type": "string"
     }
   ],
@@ -18,8 +18,8 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://{{alb_dns}}/health",
-          "protocol": "http",
+          "raw": "https://{{alb_dns}}/health",
+          "protocol": "https",
           "host": ["{{alb_dns}}"],
           "path": ["health"]
         }
@@ -37,11 +37,11 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"transaction\": {\n    \"transaction_id\": \"TEST001\",\n    \"amount\": 45.99,\n    \"merchant\": \"Amazon\",\n    \"location\": \"New York\",\n    \"card_present\": true,\n    \"recent_transaction_count\": 2\n  }\n}"
+          "raw": "{\n  \"transaction_id\": \"TEST001\",\n  \"amount\": 45.99,\n  \"merchant\": \"Amazon\",\n  \"location\": \"New York\",\n  \"card_present\": true,\n  \"recent_transaction_count\": 2\n}"
         },
         "url": {
-          "raw": "http://{{alb_dns}}/score",
-          "protocol": "http",
+          "raw": "https://{{alb_dns}}/score",
+          "protocol": "https",
           "host": ["{{alb_dns}}"],
           "path": ["score"]
         }
@@ -59,11 +59,11 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"transaction\": {\n    \"transaction_id\": \"TEST002\",\n    \"amount\": 500.00,\n    \"merchant\": \"Electronics Store\",\n    \"location\": \"California\",\n    \"card_present\": false,\n    \"recent_transaction_count\": 5\n  }\n}"
+          "raw": "{\n  \"transaction_id\": \"TEST002\",\n  \"amount\": 1500.00,\n  \"merchant\": \"Electronics Store\",\n  \"location\": \"California\",\n  \"card_present\": false,\n  \"recent_transaction_count\": 5\n}"
         },
         "url": {
-          "raw": "http://{{alb_dns}}/score",
-          "protocol": "http",
+          "raw": "https://{{alb_dns}}/score",
+          "protocol": "https",
           "host": ["{{alb_dns}}"],
           "path": ["score"]
         }
@@ -81,11 +81,11 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"transaction\": {\n    \"transaction_id\": \"TEST003\",\n    \"amount\": 2500.00,\n    \"merchant\": \"UNKNOWN_MERCHANT\",\n    \"location\": \"Foreign Country\",\n    \"card_present\": false,\n    \"recent_transaction_count\": 15\n  }\n}"
+          "raw": "{\n  \"transaction_id\": \"TEST003\",\n  \"amount\": 5000.00,\n  \"merchant\": \"UNKNOWN_MERCHANT\",\n  \"location\": \"Foreign Country\",\n  \"card_present\": false,\n  \"recent_transaction_count\": 20\n}"
         },
         "url": {
-          "raw": "http://{{alb_dns}}/score",
-          "protocol": "http",
+          "raw": "https://{{alb_dns}}/score",
+          "protocol": "https",
           "host": ["{{alb_dns}}"],
           "path": ["score"]
         }
@@ -103,26 +103,13 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"transaction\": {\n    \"transaction_id\": \"TEST004\",\n    \"amount\": 9999.99,\n    \"merchant\": \"CRYPTO_EXCHANGE\",\n    \"location\": \"Unknown\",\n    \"card_present\": false,\n    \"recent_transaction_count\": 25\n  }\n}"
+          "raw": "{\n  \"transaction_id\": \"TEST004\",\n  \"amount\": 9999.99,\n  \"merchant\": \"Cash Advance\",\n  \"location\": \"Unknown\",\n  \"card_present\": false,\n  \"recent_transaction_count\": 50\n}"
         },
         "url": {
-          "raw": "http://{{alb_dns}}/score",
-          "protocol": "http",
+          "raw": "https://{{alb_dns}}/score",
+          "protocol": "https",
           "host": ["{{alb_dns}}"],
           "path": ["score"]
-        }
-      }
-    },
-    {
-      "name": "Get Metrics",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://{{alb_dns}}/metrics",
-          "protocol": "http",
-          "host": ["{{alb_dns}}"],
-          "path": ["metrics"]
         }
       }
     }
