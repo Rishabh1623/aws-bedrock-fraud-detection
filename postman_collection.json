@@ -1,32 +1,20 @@
 {
   "info": {
     "name": "Fraud Detection API",
-    "description": "Test collection for AWS Bedrock fraud detection system",
+    "description": "AWS Bedrock Fraud Detection - Ready to use",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
-  "variable": [
-    {
-      "key": "alb_dns",
-      "value": "8xr9oib9k8.execute-api.us-east-1.amazonaws.com",
-      "type": "string"
-    }
-  ],
   "item": [
     {
       "name": "Health Check",
       "request": {
         "method": "GET",
         "header": [],
-        "url": {
-          "raw": "https://{{alb_dns}}/health",
-          "protocol": "https",
-          "host": ["{{alb_dns}}"],
-          "path": ["health"]
-        }
+        "url": "https://8xr9oib9k8.execute-api.us-east-1.amazonaws.com/health"
       }
     },
     {
-      "name": "Test 1: Normal Transaction (LOW Risk)",
+      "name": "Test 1: Low Risk Transaction",
       "request": {
         "method": "POST",
         "header": [
@@ -39,12 +27,7 @@
           "mode": "raw",
           "raw": "{\n  \"transaction_id\": \"TEST001\",\n  \"amount\": 45.99,\n  \"merchant\": \"Amazon\",\n  \"location\": \"New York\",\n  \"card_present\": true,\n  \"recent_transaction_count\": 2\n}"
         },
-        "url": {
-          "raw": "https://{{alb_dns}}/score",
-          "protocol": "https",
-          "host": ["{{alb_dns}}"],
-          "path": ["score"]
-        }
+        "url": "https://8xr9oib9k8.execute-api.us-east-1.amazonaws.com/score"
       }
     },
     {
@@ -61,12 +44,7 @@
           "mode": "raw",
           "raw": "{\n  \"transaction_id\": \"TEST002\",\n  \"amount\": 1500.00,\n  \"merchant\": \"Electronics Store\",\n  \"location\": \"California\",\n  \"card_present\": false,\n  \"recent_transaction_count\": 5\n}"
         },
-        "url": {
-          "raw": "https://{{alb_dns}}/score",
-          "protocol": "https",
-          "host": ["{{alb_dns}}"],
-          "path": ["score"]
-        }
+        "url": "https://8xr9oib9k8.execute-api.us-east-1.amazonaws.com/score"
       }
     },
     {
@@ -83,12 +61,7 @@
           "mode": "raw",
           "raw": "{\n  \"transaction_id\": \"TEST003\",\n  \"amount\": 5000.00,\n  \"merchant\": \"UNKNOWN_MERCHANT\",\n  \"location\": \"Foreign Country\",\n  \"card_present\": false,\n  \"recent_transaction_count\": 20\n}"
         },
-        "url": {
-          "raw": "https://{{alb_dns}}/score",
-          "protocol": "https",
-          "host": ["{{alb_dns}}"],
-          "path": ["score"]
-        }
+        "url": "https://8xr9oib9k8.execute-api.us-east-1.amazonaws.com/score"
       }
     },
     {
@@ -105,12 +78,7 @@
           "mode": "raw",
           "raw": "{\n  \"transaction_id\": \"TEST004\",\n  \"amount\": 9999.99,\n  \"merchant\": \"Cash Advance\",\n  \"location\": \"Unknown\",\n  \"card_present\": false,\n  \"recent_transaction_count\": 50\n}"
         },
-        "url": {
-          "raw": "https://{{alb_dns}}/score",
-          "protocol": "https",
-          "host": ["{{alb_dns}}"],
-          "path": ["score"]
-        }
+        "url": "https://8xr9oib9k8.execute-api.us-east-1.amazonaws.com/score"
       }
     }
   ]
