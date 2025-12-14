@@ -74,7 +74,30 @@ This project demonstrates the **complete architecture** for production fraud det
 
 ### Architecture Diagram
 
-![AWS Serverless Fraud Detection Architecture](docs/architecture-diagram.png)
+```
+                    ┌─────────────────┐
+                    │   API Gateway   │
+                    │   (HTTP API)    │
+                    └────────┬────────┘
+                             │
+                    ┌────────▼────────┐
+                    │  Lambda Function│
+                    │  (Fraud Detect) │
+                    └────────┬────────┘
+                             │
+        ┌────────────────────┼────────────────────┐
+        │                    │                    │
+   ┌────▼────┐          ┌────▼────┐         ┌────▼────┐
+   │ Bedrock │          │DynamoDB │         │   S3    │
+   │  Nova   │          │  Audit  │         │Training │
+   │  Lite   │          │  Logs   │         │  Data   │
+   └─────────┘          └────┬────┘         └─────────┘
+                             │
+                        ┌────▼────┐
+                        │EventBridge
+                        │   SNS   │
+                        └─────────┘
+```
 
 **Key Architectural Decisions:**
 - **Lambda over EC2**: 90% cost savings, auto-scaling, no server management
