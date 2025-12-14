@@ -74,35 +74,23 @@ This project demonstrates the **complete architecture** for production fraud det
 
 ### Architecture Diagram
 
-```
-                    ┌─────────────────┐
-                    │   API Gateway   │
-                    │   (HTTP API)    │
-                    └────────┬────────┘
-                             │
-                    ┌────────▼────────┐
-                    │  Lambda Function│
-                    │  (Fraud Detect) │
-                    └────────┬────────┘
-                             │
-        ┌────────────────────┼────────────────────┐
-        │                    │                    │
-   ┌────▼────┐          ┌────▼────┐         ┌────▼────┐
-   │ Bedrock │          │DynamoDB │         │   S3    │
-   │  Nova   │          │  Audit  │         │Training │
-   │  Lite   │          │  Logs   │         │  Data   │
-   └─────────┘          └────┬────┘         └─────────┘
-                             │
-                        ┌────▼────┐
-                        │EventBridge
-                        │   SNS   │
-                        └─────────┘
-```
+![AWS Architecture Diagram](docs/architecture-diagram.png)
+
+**Request Flow:**
+1. **Client** sends transaction data via HTTPS POST
+2. **API Gateway** (HTTP API) receives and validates request
+3. **Lambda Function** processes transaction and calls Bedrock
+4. **Amazon Bedrock** (Nova Lite) analyzes transaction and returns risk score
+5. **DynamoDB** stores transaction for audit trail
+6. **EventBridge** triggers on high-risk transactions (score > 0.8)
+7. **SNS** sends alerts to fraud team
+8. **CloudWatch** monitors all components with logs, metrics, and alarms
 
 **Key Architectural Decisions:**
 - **Lambda over EC2**: 90% cost savings, auto-scaling, no server management
 - **HTTP API over REST API**: 70% cheaper, sufficient for use case
 - **Base Model over RFT**: Immediate deployment, RFT pipeline ready for production
+- **DynamoDB on-demand**: Pay-per-request, no capacity planning needed
 - See [docs/ARCHITECTURE_DECISIONS.md](docs/ARCHITECTURE_DECISIONS.md) for detailed rationale
 
 ## 📁 Project Structure
