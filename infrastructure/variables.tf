@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "project_name" {
   description = "Project name for resource naming"
   type        = string
-  default     = "fraud-detection-rft"
+  default     = "fraud-detection"
 }
 
 variable "environment" {
@@ -28,7 +28,7 @@ variable "owner_email" {
 }
 
 variable "bedrock_model_id" {
-  description = "Bedrock model ID for inference (use Nova Lite for RFT compatibility)"
+  description = "Bedrock model ID for inference (Nova Lite recommended for cost-effectiveness)"
   type        = string
   default     = "amazon.nova-lite-v1:0"
 }

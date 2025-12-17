@@ -2,7 +2,7 @@
 
 > **AWS Solutions Architect Portfolio Project**
 
-Production-grade, real-time fraud detection system using Amazon Bedrock with Nova Lite. Demonstrates advanced AWS serverless architecture, AI/ML integration, and operational excellence. Includes RFT training pipeline for production deployment.
+Production-grade, real-time fraud detection system using Amazon Bedrock with Nova Lite. Demonstrates advanced AWS serverless architecture, AI/ML integration, and operational excellence using prompt engineering for immediate deployment.
 
 [![Architecture](https://img.shields.io/badge/AWS-Solutions%20Architect-orange)](docs/AWS_SA_PORTFOLIO.md)
 [![Infrastructure](https://img.shields.io/badge/IaC-Terraform-purple)](infrastructure/)
@@ -20,13 +20,8 @@ Production-grade, real-time fraud detection system using Amazon Bedrock with Nov
 - ✅ **Monitoring & Alerts** - CloudWatch dashboards, alarms, metric filters
 - ✅ **Security Architecture** - WAF configuration (documented for production)
 
-**What's Included (Not Yet Deployed):**
-- 📋 **RFT Training Pipeline** - `model/train_rft.py` ready for custom model training
-- 📋 **Sample Data Generator** - `data/generate_sample_data.py` for training data
-- 📋 **Model Evaluation** - `model/evaluate_model.py` for accuracy testing
-
 **Why This Approach:**
-This project demonstrates the **complete architecture** for production fraud detection, using the base Nova model for immediate deployment. The RFT training pipeline is production-ready and can be activated when you have real fraud data. This shows architectural thinking and cost optimization - key SA skills.
+This project uses **prompt engineering with the base Nova Lite model** for immediate, cost-effective deployment. This demonstrates architectural thinking and cost optimization - key SA skills. The system achieves production-grade fraud detection without requiring expensive model training or labeled fraud datasets.
 
 ---
 
@@ -42,11 +37,9 @@ This project demonstrates the **complete architecture** for production fraud det
 - **[✅ PRE-DEPLOYMENT CHECKLIST](PRE_DEPLOYMENT_CHECKLIST.md)** - Verify you're ready to deploy
 
 ### Technical Documentation
-- **[🤖 Bedrock RFT Models](docs/BEDROCK_RFT_MODELS.md)** - Supported models and why Nova Lite
-- **[🏗️ Architecture Deep Dive](docs/ARCHITECTURE.md)** - Technical architecture details
-- **[💼 AWS SA Portfolio Guide](docs/AWS_SA_PORTFOLIO.md)** - How this showcases SA skills
-- **[🎤 Interview Guide](docs/INTERVIEW_GUIDE.md)** - Common questions and answers
-- **[💰 Cost Analysis](docs/COST_ANALYSIS.md)** - Detailed cost breakdown and ROI
+- **[🏗️ Architecture Decisions](docs/ARCHITECTURE_DECISIONS.md)** - Technical architecture and design choices
+- **[� Interview uQuestions](docs/INTERVIEW_QUESTIONS.md)** - Common questions and answers
+- **[� DeSployment Guide](DEPLOYMENT.md)** - Complete deployment instructions
 
 ---
 
@@ -56,7 +49,7 @@ This project demonstrates the **complete architecture** for production fraud det
 - **Real-time AI Inference**: <2s latency using Amazon Nova Lite
 - **Auto-scaling**: Handles 1 to 10,000+ TPS automatically
 - **Production-Ready**: Monitoring, alerting, audit logging, high availability
-- **RFT-Ready**: Training pipeline included for 60-70% accuracy improvement
+- **Prompt Engineering**: Effective fraud detection without expensive model training
 - **Cost-Optimized**: Pay-per-request pricing, no idle resources
 
 ## 🏗️ AWS Architecture
@@ -89,7 +82,7 @@ This project demonstrates the **complete architecture** for production fraud det
 **Key Architectural Decisions:**
 - **Lambda over EC2**: 90% cost savings, auto-scaling, no server management
 - **HTTP API over REST API**: 70% cheaper, sufficient for use case
-- **Base Model over RFT**: Immediate deployment, RFT pipeline ready for production
+- **Prompt Engineering over Fine-Tuning**: Immediate deployment, no training data required, cost-effective
 - See [docs/ARCHITECTURE_DECISIONS.md](docs/ARCHITECTURE_DECISIONS.md) for detailed rationale
 
 ## 📁 Project Structure
@@ -111,13 +104,11 @@ aws-bedrock-fraud-detection/
 │   ├── requirements.txt        # Python dependencies
 │   ├── Dockerfile              # Container image
 │   └── docker-compose.yml      # Local development
-├── model/                      # ML Training Scripts
-│   ├── train_rft.py            # Bedrock RFT training
-│   ├── evaluate_model.py       # Model evaluation
+├── model/                      # Model Evaluation (Optional)
+│   ├── evaluate_model.py       # Model evaluation scripts
 │   └── requirements.txt        # Python dependencies
-├── data/                       # Data Generation
-│   ├── generate_sample_data.py # Synthetic data generator
-│   ├── training/               # Training datasets
+├── data/                       # Test Data
+│   ├── generate_sample_data.py # Test data generator
 │   └── test/                   # Test datasets
 ├── dashboard/                  # React Monitoring UI
 │   ├── src/
@@ -173,7 +164,7 @@ aws-bedrock-fraud-detection/
 6. Optionally enable: **Amazon Nova Micro** and **Amazon Nova Pro**
 7. Submit request (usually approved instantly)
 
-> **Note:** As of December 2024, Bedrock RFT only supports Amazon Nova models. Nova Lite is recommended for cost-effectiveness.
+> **Note:** This project uses Amazon Nova Lite for cost-effective, real-time fraud detection via prompt engineering.
 
 ### Step 1: Choose Your Deployment Method
 
@@ -291,100 +282,48 @@ s3_bucket_name = "fraud-detection-rft-model-artifacts-123456789012"
 
 **💾 Save these outputs!** You'll need them for the next steps.
 
-### Step 6: Generate Sample Training Data
+### Step 6: Wait for Lambda Function to be Ready
 
 ```bash
-# Go back to project root
-cd ..
+# Check if Lambda function is deployed
+aws lambda get-function --function-name fraud-detection-api
 
-# Navigate to data directory
-cd data
-
-# Install Python dependencies
-pip install boto3 pandas
-
-# Generate synthetic fraud data
-python generate_sample_data.py
+# Should show function configuration
+# Lambda is ready immediately after Terraform apply
 ```
 
-**Expected output:**
-```
-Generating training dataset...
-Generated 1000 transactions
-Fraud cases: 50
-Normal cases: 950
-
-Generating test dataset...
-Generated 200 test transactions
-```
-
-**Files created:**
-- `data/training/fraud_samples.jsonl` - Training data
-- `data/test/test_transactions.jsonl` - Test data
-
-### Step 7: Wait for EC2 Instances to be Ready
+### Step 7: Test the API
 
 ```bash
-# Check if EC2 instances are running
-aws ec2 describe-instances \
-  --filters "Name=tag:Name,Values=fraud-detection-rft-api-server" \
-  --query "Reservations[].Instances[].State.Name" \
-  --output text
-
-# Should show: running running (if multi-AZ) or just running
-
-# Wait for instances to pass health checks (takes 5-10 minutes)
-# Check ALB target health
-aws elbv2 describe-target-health \
-  --target-group-arn $(aws elbv2 describe-target-groups \
-    --names fraud-detection-rft-api-tg \
-    --query "TargetGroups[0].TargetGroupArn" \
-    --output text)
-
-# Wait until TargetHealth.State shows "healthy"
-```
-
-### Step 8: Test the API
-
-```bash
-# Get your ALB DNS name
+# Get your API Gateway endpoint
 cd infrastructure
-ALB_DNS=$(terraform output -raw alb_dns_name)
-echo "API Endpoint: http://$ALB_DNS"
+API_ENDPOINT=$(terraform output -raw api_gateway_url)
+echo "API Endpoint: $API_ENDPOINT"
 
-# Test 1: Health Check
-curl http://$ALB_DNS/health
-
-# Expected: {"status":"healthy","timestamp":"2024-12-03T..."}
-
-# Test 2: Score a Normal Transaction
-curl -X POST http://$ALB_DNS/score \
+# Test 1: Score a Normal Transaction
+curl -X POST $API_ENDPOINT \
   -H "Content-Type: application/json" \
   -d '{
-    "transaction": {
-      "transaction_id": "TEST001",
-      "amount": 45.99,
-      "merchant": "Amazon",
-      "location": "New York",
-      "card_present": true,
-      "recent_transaction_count": 2
-    }
+    "transaction_id": "TEST001",
+    "amount": 45.99,
+    "merchant": "Amazon",
+    "location": "New York, NY",
+    "card_present": true,
+    "recent_transaction_count": 2
   }'
 
 # Expected: {"transaction_id":"TEST001","risk_score":0.15,"risk_level":"LOW",...}
 
-# Test 3: Score a Suspicious Transaction
-curl -X POST http://$ALB_DNS/score \
+# Test 2: Score a Suspicious Transaction
+curl -X POST $API_ENDPOINT \
   -H "Content-Type: application/json" \
   -d '{
-    "transaction": {
-      "transaction_id": "TEST002",
-      "amount": 2500.00,
-      "merchant": "UNKNOWN_MERCHANT",
-      "location": "Foreign Country",
-      "card_present": false,
-      "recent_transaction_count": 15
-    }
+    "transaction_id": "TEST002",
+    "amount": 2500.00,
+    "merchant": "UNKNOWN_MERCHANT",
+    "location": "Foreign Country",
+    "card_present": false,
+    "recent_transaction_count": 15
   }'
 
 # Expected: {"transaction_id":"TEST002","risk_score":0.85,"risk_level":"HIGH",...}
@@ -392,48 +331,7 @@ curl -X POST http://$ALB_DNS/score \
 
 **✅ If you see JSON responses, your API is working!**
 
-### Step 9: (Optional) Train Custom RFT Model
-
-**⚠️ Important:** This step is **optional** and demonstrates the RFT training capability. It's not required for the demo to work.
-
-**Why skip this for now:**
-- Costs ~$50-100 for training
-- Takes 2-4 hours to complete
-- Requires real fraud data for meaningful results
-- Base model works well for portfolio demonstration
-
-**When to use RFT training:**
-- You have labeled fraud data (transactions marked as fraud/legitimate)
-- You're deploying to production
-- You need 60-70% accuracy improvement
-- You want to customize for specific fraud patterns
-
-**To train a custom model:**
-
-```bash
-cd model
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Get S3 bucket name from Terraform
-S3_BUCKET=$(cd ../infrastructure && terraform output -raw s3_bucket_name)
-
-# Start RFT training job
-python train_rft.py \
-  --dataset ../data/training/fraud_samples.jsonl \
-  --bucket $S3_BUCKET \
-  --model amazon.nova-lite-v1:0 \
-  --job-name fraud-rft-$(date +%Y%m%d)
-
-# Training takes 2-4 hours
-# Monitor in AWS Console: Bedrock > Custom models
-```
-
-**For interviews, you can say:**
-> "I've built the complete RFT training pipeline that's production-ready. For this demo, I'm using the base Nova Lite model to keep costs low and deployment fast. In production, we'd collect labeled fraud data and use the training pipeline to fine-tune the model, which typically improves accuracy by 60-70%."
-
-### Step 10: (Optional) Launch Monitoring Dashboard
+### Step 8: (Optional) Launch Monitoring Dashboard
 
 ```bash
 cd dashboard
@@ -442,8 +340,8 @@ cd dashboard
 npm install
 
 # Update API endpoint in src/App.jsx
-# Replace YOUR_API_ENDPOINT with your ALB DNS
-sed -i "s|YOUR_API_ENDPOINT|http://$ALB_DNS|g" src/App.jsx
+# Replace YOUR_API_ENDPOINT with your API Gateway URL
+sed -i "s|YOUR_API_ENDPOINT|$API_ENDPOINT|g" src/App.jsx
 
 # Start development server
 npm run dev
@@ -451,16 +349,16 @@ npm run dev
 # Open browser to http://localhost:5173
 ```
 
-### Step 11: View Your Infrastructure
+### Step 9: View Your Infrastructure
 
 **AWS Console Checklist:**
 
-1. **EC2 Dashboard** → See your running instances
-2. **Load Balancers** → See your ALB and target health
-3. **VPC** → See your custom VPC, subnets, route tables
-4. **DynamoDB** → See transaction logs
-5. **CloudWatch** → See metrics and logs
-6. **S3** → See your buckets
+1. **Lambda** → See your fraud detection function
+2. **API Gateway** → See your HTTP API
+3. **DynamoDB** → See transaction logs
+4. **CloudWatch** → See metrics and logs
+5. **Bedrock** → Verify Nova Lite model access
+6. **EventBridge** → See fraud alert rules
 
 ## 🧪 Testing & Validation
 
@@ -468,7 +366,7 @@ npm run dev
 
 ```bash
 # Test API endpoints
-bash scripts/test_api.sh http://$ALB_DNS
+bash scripts/test_api.sh $API_ENDPOINT
 
 # Expected output:
 # Test 1: Normal Transaction ✓
@@ -479,24 +377,24 @@ bash scripts/test_api.sh http://$ALB_DNS
 ### Check CloudWatch Logs
 
 ```bash
-# View application logs
-aws logs tail /aws/ec2/fraud-detection-rft --follow
-
-# View ALB access logs
-aws s3 ls s3://fraud-detection-rft-alb-logs-YOUR_ACCOUNT_ID/
+# View Lambda logs
+aws logs tail /aws/lambda/fraud-detection-api --follow
 ```
 
 ### Verify DynamoDB Data
 
 ```bash
+# Get table name from Terraform
+TABLE_NAME=$(cd infrastructure && terraform output -raw dynamodb_table_name)
+
 # Check transaction count
 aws dynamodb scan \
-  --table-name fraud-detection-rft-transactions \
+  --table-name $TABLE_NAME \
   --select COUNT
 
 # View recent transactions
 aws dynamodb scan \
-  --table-name fraud-detection-rft-transactions \
+  --table-name $TABLE_NAME \
   --limit 5
 ```
 
@@ -504,23 +402,25 @@ aws dynamodb scan \
 
 ### Estimated Costs
 
-**Development/Testing (running for 1 day):**
-- EC2 (1x t3.small): ~$0.50/day
-- ALB: ~$0.60/day
-- NAT Gateway: ~$1.00/day
-- DynamoDB: ~$0.10/day
-- **Total: ~$2-3/day**
+**Development/Testing (1000 transactions):**
+- Lambda: ~$0.20 (first 1M requests free tier)
+- API Gateway: ~$0.01 (first 1M requests free tier)
+- DynamoDB: ~$0.25 (on-demand)
+- Bedrock (Nova Lite): ~$0.06
+- **Total: ~$0.50 for testing** (mostly free tier)
+
+**Production (1M transactions/month):**
+- Lambda: ~$20
+- API Gateway: ~$10
+- DynamoDB: ~$25
+- Bedrock: ~$60
+- **Total: ~$115/month**
 
 **To minimize costs:**
 
 ```bash
-# Stop when not in use
+# Destroy all resources when not in use
 terraform destroy
-
-# Or stop EC2 instances only (keeps infrastructure)
-aws autoscaling set-desired-capacity \
-  --auto-scaling-group-name fraud-detection-rft-asg \
-  --desired-capacity 0
 ```
 
 ### Cleanup (Destroy Everything)
@@ -548,53 +448,46 @@ terraform destroy
 | Availability | 99.95% | Lambda multi-AZ by default |
 | Cold Start | <1s | Minimal impact with provisioned concurrency |
 
-### With RFT Training (Production Deployment)
-| Metric | Expected Value | Improvement |
-|--------|---------------|-------------|
-| Accuracy | 90-95% | +60-70% vs base model |
-| False Positive Rate | <3% | -70% reduction |
-| Latency | <100ms | Optimized inference |
-| Cost per Transaction | $0.0001 | Further optimization |
-
-**Note:** RFT training requires labeled fraud data. The training pipeline (`model/train_rft.py`) is production-ready and can be activated when you have real transaction data with fraud labels.
+### Optimization Opportunities
+- **Provisioned Concurrency**: Eliminate cold starts for <10ms latency
+- **Reserved Capacity**: 30-50% cost savings for predictable workloads
+- **Batch Processing**: Process multiple transactions per invocation
+- **Caching**: Cache common fraud patterns in DynamoDB
 
 ## 💰 Cost Analysis
 
 ### Monthly Cost Breakdown (1M transactions)
-- **EC2** (2x t3.medium): $60
-- **ALB**: $20
+- **Lambda**: $20
+- **API Gateway**: $10
 - **DynamoDB**: $25
-- **Bedrock Inference**: $100
-- **Data Transfer**: $10
-- **Total**: ~$215/month
+- **Bedrock (Nova Lite)**: $60
+- **CloudWatch**: $5
+- **Total**: ~$120/month
 
 ### ROI Calculation
-- **Cost Savings**: $300K/year (reduced false positives)
 - **Fraud Prevention**: $2M/year (improved detection)
-- **Infrastructure Cost**: $2,580/year
+- **Reduced False Positives**: $300K/year (better customer experience)
+- **Infrastructure Cost**: $1,440/year
 - **Net Benefit**: $2.3M/year
 
 ## 📚 Documentation
 
-- **[AWS SA Portfolio Guide](docs/AWS_SA_PORTFOLIO.md)** - Detailed architecture and SA skills showcase
-- **[Interview Guide](docs/INTERVIEW_GUIDE.md)** - Common questions and talking points
-- **[Architecture Deep Dive](docs/ARCHITECTURE.md)** - Technical architecture details
-- **[Deployment Guide](docs/DEPLOYMENT.md)** - Step-by-step deployment instructions
-- **[RFT Benefits](docs/RFT_BENEFITS.md)** - Why RFT for fraud detection
+- **[Architecture Decisions](docs/ARCHITECTURE_DECISIONS.md)** - Technical architecture and design choices
+- **[Interview Questions](docs/INTERVIEW_QUESTIONS.md)** - Common questions and talking points
+- **[Deployment Guide](DEPLOYMENT.md)** - Step-by-step deployment instructions
 
 ## 🛠️ Technology Stack
 
 **Infrastructure**
 - Terraform (IaC)
-- AWS VPC, EC2, ALB, Auto Scaling
-- Amazon Bedrock (RFT)
-- DynamoDB, S3
+- AWS Lambda, API Gateway
+- Amazon Bedrock (Nova Lite)
+- DynamoDB, EventBridge, SNS
 
 **Application**
 - Python 3.11
-- FastAPI (async API framework)
+- AWS Lambda runtime
 - Boto3 (AWS SDK)
-- Docker
 
 **Frontend**
 - React 18
@@ -608,39 +501,38 @@ terraform destroy
 
 ## 🔒 Security Features
 
-- ✅ VPC with private subnets
-- ✅ Security groups with least privilege
-- ✅ IAM roles (no access keys)
-- ✅ IMDSv2 enforcement
-- ✅ Encryption at rest and in transit
-- ✅ VPC endpoints (no internet routing)
-- ✅ AWS Systems Manager Session Manager
+- ✅ IAM roles with least privilege
+- ✅ API Gateway throttling and quotas
+- ✅ Encryption at rest (DynamoDB)
+- ✅ Encryption in transit (HTTPS)
 - ✅ CloudTrail audit logging
-- ✅ S3 bucket policies (block public access)
+- ✅ Lambda environment variable encryption
+- ✅ Resource-based policies
+- ✅ AWS WAF ready (optional)
 
 ## 🎓 Learning Outcomes
 
 This project demonstrates proficiency in:
 
-- **AWS Solutions Architecture**: Multi-tier, highly available architecture
+- **AWS Solutions Architecture**: Serverless, event-driven architecture
 - **Infrastructure as Code**: Terraform best practices
-- **Security**: Defense in depth, least privilege
-- **Scalability**: Auto Scaling, load balancing
-- **Cost Optimization**: Right-sizing, on-demand resources
+- **Security**: IAM roles, encryption, least privilege
+- **Scalability**: Lambda auto-scaling, API Gateway
+- **Cost Optimization**: Pay-per-request, no idle resources
 - **Monitoring**: CloudWatch, custom metrics, alarms
-- **AI/ML**: Bedrock RFT, model training and deployment
+- **AI/ML**: Bedrock integration, prompt engineering
 - **DevOps**: CI/CD ready, automated deployment
 
 ## 🚧 Future Enhancements
 
 - [ ] AWS WAF for API protection
-- [ ] AWS Secrets Manager integration
 - [ ] AWS X-Ray distributed tracing
 - [ ] CI/CD pipeline with CodePipeline
 - [ ] Multi-region active-active deployment
 - [ ] Amazon QuickSight dashboards
-- [ ] AWS Config compliance monitoring
-- [ ] Container orchestration with ECS/EKS
+- [ ] Step Functions for complex workflows
+- [ ] SQS for async processing
+- [ ] Model fine-tuning with real fraud data
 
 ## 📝 License
 
@@ -699,9 +591,8 @@ aws ec2 describe-instances \
 
 ### Need Help?
 
-- 📖 Check [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed instructions
+- 📖 Check [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions
 - 💬 Open an [Issue](https://github.com/Rishabh1623/aws-bedrock-fraud-detection/issues)
-- 📧 Email: rishabh@example.com
 
 ## 🤝 Contributing
 
@@ -720,10 +611,9 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🌟 Acknowledgments
 
-- AWS Bedrock team for RFT capabilities
-- Anthropic for Claude models
+- AWS Bedrock team for Nova models
 - HashiCorp for Terraform
-- FastAPI community
+- AWS Serverless community
 
 ---
 
