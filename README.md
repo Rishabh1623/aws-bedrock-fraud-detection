@@ -598,7 +598,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 **Rishabh**
 - GitHub: [@Rishabh1623](https://github.com/Rishabh1623)
-- LinkedIn: [linkedin.com/in/yourprofile](https://linkedin.com/in/yourprofile)
+- LinkedIn: https://www.linkedin.com/in/rmadne-cloud/
 - Portfolio: [your-portfolio.com](https://your-portfolio.com)
 
 ## 🌟 Acknowledgments
