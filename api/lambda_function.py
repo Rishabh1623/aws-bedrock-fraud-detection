@@ -8,7 +8,7 @@ bedrock_runtime = boto3.client('bedrock-runtime')
 dynamodb = boto3.resource('dynamodb')
 events = boto3.client('events')
 
-TABLE_NAME = os.environ.get('DYNAMODB_TABLE', 'fraud-detection-rft-transactions')
+TABLE_NAME = os.environ.get('DYNAMODB_TABLE', 'fraud-detection-transactions')
 MODEL_ID = os.environ.get('MODEL_ID', 'amazon.nova-lite-v1:0')
 
 def lambda_handler(event, context):
@@ -60,7 +60,7 @@ def lambda_handler(event, context):
         }
 
 def score_transaction(transaction):
-    """Score transaction using Bedrock RFT model"""
+    """Score transaction using Bedrock Nova Lite with prompt engineering"""
     prompt = f"""Analyze this financial transaction for risk indicators:
 
 Transaction Details:

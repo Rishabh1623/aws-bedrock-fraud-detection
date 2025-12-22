@@ -38,11 +38,6 @@ output "sns_topic_arn" {
   value       = aws_sns_topic.fraud_alerts.arn
 }
 
-output "waf_web_acl_arn" {
-  description = "WAF Web ACL ARN"
-  value       = aws_wafv2_web_acl.api_protection.arn
-}
-
 output "cloudwatch_dashboard_name" {
   description = "CloudWatch Dashboard name"
   value       = aws_cloudwatch_dashboard.main.dashboard_name

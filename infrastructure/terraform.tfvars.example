@@ -1,7 +1,7 @@
 # Example Terraform variables - copy to terraform.tfvars and customize
 
 aws_region      = "us-east-1"
-project_name    = "fraud-detection-rft"
+project_name    = "fraud-detection"
 environment     = "dev"
 owner_email     = "your-email@example.com"
 
@@ -20,7 +20,7 @@ enable_multi_az = false  # Set to true for production
 # Security Features
 enable_waf = false  # Set to true for production
 
-# Bedrock Model (Nova Lite supports RFT)
+# Bedrock Model (Nova Lite with prompt engineering)
 bedrock_model_id = "amazon.nova-lite-v1:0"
 
 # Fraud Detection

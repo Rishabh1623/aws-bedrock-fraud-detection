@@ -1,14 +1,11 @@
 # Financial Fraud Detection Engine with Amazon Bedrock
 
-> **AWS Solutions Architect Portfolio Project**
+Production-grade, real-time fraud detection system using Amazon Bedrock with Nova Lite. Serverless architecture with AI/ML integration using prompt engineering for immediate deployment.
 
-Production-grade, real-time fraud detection system using Amazon Bedrock with Nova Lite. Demonstrates advanced AWS serverless architecture, AI/ML integration, and operational excellence using prompt engineering for immediate deployment.
-
-[![Architecture](https://img.shields.io/badge/AWS-Solutions%20Architect-orange)](docs/AWS_SA_PORTFOLIO.md)
 [![Infrastructure](https://img.shields.io/badge/IaC-Terraform-purple)](infrastructure/)
 [![API](https://img.shields.io/badge/Serverless-Lambda-green)](api/)
 
-**🎯 Perfect for:** AWS Solutions Architect interviews and portfolio | **⏱️ Setup Time:** 15-20 minutes | **💰 Cost:** ~$2-5 for testing
+**⏱️ Setup Time:** 15-20 minutes | **💰 Cost:** ~$2-5 for testing
 
 ## 🔍 Current Implementation
 
@@ -21,14 +18,11 @@ Production-grade, real-time fraud detection system using Amazon Bedrock with Nov
 - ✅ **Security Architecture** - WAF configuration (documented for production)
 
 **Why This Approach:**
-This project uses **prompt engineering with the base Nova Lite model** for immediate, cost-effective deployment. This demonstrates architectural thinking and cost optimization - key SA skills. The system achieves production-grade fraud detection without requiring expensive model training or labeled fraud datasets.
+This project uses **prompt engineering with the base Nova Lite model** for immediate, cost-effective deployment. The system achieves production-grade fraud detection without requiring expensive model training or labeled fraud datasets.
 
 ---
 
 ## 📖 Documentation Quick Links
-
-### 🎯 Start Here
-- **[🎯 PROJECT PURPOSE](PROJECT_PURPOSE.md)** - Why build this? Career goals & ROI (READ FIRST!)
 
 ### Deployment Guides
 - **[🖥️ DEPLOY FROM EC2](DEPLOY_FROM_EC2.md)** - Deploy from Ubuntu EC2 instance (RECOMMENDED!)
@@ -38,8 +32,7 @@ This project uses **prompt engineering with the base Nova Lite model** for immed
 
 ### Technical Documentation
 - **[🏗️ Architecture Decisions](docs/ARCHITECTURE_DECISIONS.md)** - Technical architecture and design choices
-- **[� Interview uQuestions](docs/INTERVIEW_QUESTIONS.md)** - Common questions and answers
-- **[� DeSployment Guide](DEPLOYMENT.md)** - Complete deployment instructions
+- **[📋 Deployment Guide](DEPLOYMENT.md)** - Complete deployment instructions
 
 ---
 
@@ -521,7 +514,6 @@ This project demonstrates proficiency in:
 - **Cost Optimization**: Pay-per-request, no idle resources
 - **Monitoring**: CloudWatch, custom metrics, alarms
 - **AI/ML**: Bedrock integration, prompt engineering
-- **DevOps**: CI/CD ready, automated deployment
 
 ## 🚧 Future Enhancements
 

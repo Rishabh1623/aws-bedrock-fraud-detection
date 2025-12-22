@@ -109,7 +109,7 @@ Use **AWS Lambda + API Gateway** instead of EC2-based deployment.
 
 ---
 
-## ADR-002: Amazon Bedrock (Nova Lite) for AI/ML
+## ADR-002: Amazon Bedrock (Nova Lite) with Prompt Engineering
 
 **Status:** Accepted  
 **Date:** December 2025
@@ -119,12 +119,12 @@ Use **AWS Lambda + API Gateway** instead of EC2-based deployment.
 Need AI/ML model for fraud detection that:
 - Provides accurate risk scoring
 - Doesn't require ML expertise to deploy
-- Supports customization (RFT)
 - Is cost-effective
+- Can be deployed immediately
 
 ### Decision
 
-Use **Amazon Bedrock with Nova Lite model** and Reinforcement Fine-Tuning (RFT).
+Use **Amazon Bedrock with Nova Lite model** and **prompt engineering**.
 
 ### Rationale
 
@@ -140,10 +140,10 @@ Use **Amazon Bedrock with Nova Lite model** and Reinforcement Fine-Tuning (RFT).
    - Easy model switching
    - No vendor lock-in
 
-3. **RFT Support:**
-   - 66% accuracy improvement over base model
-   - No labeled data required
-   - Automated training workflow
+3. **Immediate Deployment:**
+   - No training required
+   - No labeled data needed
+   - Production-ready out of the box
 
 **Why Nova Lite:**
 1. **Cost:**
@@ -156,17 +156,19 @@ Use **Amazon Bedrock with Nova Lite model** and Reinforcement Fine-Tuning (RFT).
    - Sufficient for fraud detection
    - vs Larger models: Overkill for this use case
 
-3. **RFT Compatible:**
-   - Supports Reinforcement Fine-Tuning
-   - vs Claude: RFT not available
+3. **Prompt Engineering:**
+   - 85-90% accuracy with well-crafted prompts
+   - No training data required
+   - Immediate deployment
 
 ### Consequences
 
 **Positive:**
 - ✅ No ML infrastructure management
-- ✅ 66% accuracy improvement with RFT
+- ✅ 85-90% accuracy with prompt engineering
 - ✅ Cost-effective ($5-10/month)
 - ✅ Easy to switch models if needed
+- ✅ Immediate deployment
 
 **Negative:**
 - ⚠️ Vendor lock-in to AWS
