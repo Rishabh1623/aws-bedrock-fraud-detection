@@ -340,19 +340,19 @@ Automated alarms for:
 
 ## 9. Next Steps & Future Enhancements
 
-### Short Term (1-3 months)
+### Short Term 
 - [ ] Add AWS WAF for API protection
 - [ ] Implement X-Ray distributed tracing
 - [ ] Create QuickSight dashboards for business analytics
 - [ ] Add CI/CD pipeline with GitHub Actions
 
-### Medium Term (3-6 months)
+### Medium Term 
 - [ ] Collect real fraud data for model fine-tuning
 - [ ] Implement A/B testing for prompt variations
 - [ ] Add SQS for async batch processing
 - [ ] Multi-region deployment for global availability
 
-### Long Term (6-12 months)
+### Long Term 
 - [ ] Fine-tune Bedrock model with production data (target 95%+ accuracy)
 - [ ] Implement Step Functions for complex fraud workflows
 - [ ] Add real-time streaming with Kinesis
@@ -375,8 +375,7 @@ MIT License - see [LICENSE](LICENSE)
 
 **Rishabh Madne**
 - GitHub: [@Rishabh1623](https://github.com/Rishabh1623)
-- LinkedIn: [rishabh-madne](https://www.linkedin.com/in/rishabh-madne/)
-
+- LinkedIn: https://www.linkedin.com/in/rmadne-cloud/
 ---
 
 **Built to demonstrate production-grade AWS architecture and AI/ML integration**
