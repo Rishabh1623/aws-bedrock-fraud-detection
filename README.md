@@ -110,7 +110,7 @@ I designed a **serverless, event-driven architecture** using AWS managed service
 - **Accuracy**: 85-90% sufficient for initial deployment
 - **Flexibility**: Easy to iterate on prompts vs retraining models
 
-**Future Path:** Can enhance with fine-tuning once real fraud data is collected
+**Future Path:** Can enhance with AWS Bedrock fine-tuning once real fraud data is collected
 
 ### Decision 3: DynamoDB vs RDS
 
